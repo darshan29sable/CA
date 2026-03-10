@@ -13,6 +13,23 @@
             max-width: 1400px;
             margin: 0 auto;
             text-align: center;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .community-hero.collapsed {
+            padding-top: 6rem;
+            padding-bottom: 1rem;
+        }
+
+        .community-hero.collapsed h1,
+        .community-hero.collapsed .badge,
+        .community-hero.collapsed p {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            pointer-events: none;
         }
         
         .community-hero h1 {
@@ -278,10 +295,11 @@
     </header>
 
     <main>
-        <section class="community-hero">
+        <section class="community-hero" id="global-page-header">
             <h2 class="badge">Exclusive Membership</h2>
             <h1>Elevate Your <span class="highlight">Automation Career</span></h1>
             <p class="lead">Join a network of elite RPA developers and gain access to production-grade resources.</p>
+            <button class="page-header-trigger" onclick="window.toggleGlobalHeader()"><i data-lucide="chevron-up"></i></button>
         </section>
 
         <section class="vault-section">
@@ -349,6 +367,7 @@
                 <form class="fam-form" id="fam-join-form">
                     <input type="text" name="name" placeholder="Full Name" required>
                     <input type="email" name="email" placeholder="Professional Email" required>
+                    <input type="text" name="recovery" placeholder="Choose a 4-digit Recovery PIN" pattern="[0-9]{4}" title="Exactly 4 digits" required>
                     <input type="text" name="linkedin" placeholder="LinkedIn Profile URL" required>
                     <button type="submit">Submit Application</button>
                 </form>
@@ -384,6 +403,7 @@
             
             const name = this.name.value;
             const email = this.email.value;
+            const recovery = this.recovery.value;
             const linkedin = this.linkedin.value;
             
             const subject = encodeURIComponent(`Community Membership Application - ${name}`);
@@ -396,6 +416,7 @@
                 `--------------------------------------------------\n` +
                 `👤 Name: ${name}\n` +
                 `📧 Email: ${email}\n` +
+                `🔐 Recovery PIN: ${recovery}\n` +
                 `🔗 LinkedIn: ${linkedin}\n` +
                 `--------------------------------------------------\n\n` +
                 `I am looking forward to being part of the community and mastering RPA alongside the elite.\n\n` +

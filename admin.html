@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Captain Automation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body class="admin-page">
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="index.html">CAPTAIN<span>AUTOMATION</span></a>
+            </div>
+            <div class="nav-links">
+                <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme">
+                    <i data-lucide="moon"></i>
+                </button>
+                <a href="index.html">Back to Home</a>
+                <button id="logout-btn" class="btn-small" style="background: var(--accent-red); color: white !important;">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="page-header" id="main-header">
+        <div class="header-inner" id="header-content">
+            <div class="badge">Master Control</div>
+            <h1>Admin <span class="highlight">Dashboard</span></h1>
+        </div>
+        <div class="header-tools">
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="users"><i data-lucide="users"></i> Community</button>
+                <button class="tab-btn" data-tab="free"><i data-lucide="book-open"></i> Free Resources</button>
+                <button class="tab-btn" data-tab="exclusive"><i data-lucide="shield-check"></i> Exclusive</button>
+                <button class="tab-btn" data-tab="youtube"><i data-lucide="youtube"></i> YouTube</button>
+            </div>
+            <button id="header-collapse-btn" class="collapse-trigger" title="Toggle Compact View">
+                <i data-lucide="chevron-up"></i>
+            </button>
+        </div>
+    </main>
+
+    <section id="admin-controls" style="padding: 2rem 5% 8rem; max-width: 1400px; margin: 0 auto;">
+        
+        <!-- TOAST NOTIFICATION -->
+        <div id="toast" style="position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 2rem; background: #10b981; color: white; border-radius: 12px; font-weight: 600; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); opacity: 0; pointer-events: none; z-index: 9999; display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="check-circle"></i> <span id="toast-msg">Success!</span>
+        </div>
+
+        <!-- USER MANAGEMENT -->
+        <div id="users-tab" class="tab-content active">
+            <div class="admin-actions">
+                <h3>Community Members</h3>
+                <div class="action-group">
+                    <button id="create-user-btn" class="btn primary btn-sm"><i data-lucide="user-plus"></i> Create User</button>
+                    <button class="btn secondary btn-sm refresh-config-btn"><i data-lucide="refresh-cw"></i> Refresh</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="user-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Scores</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FREE RESOURCES -->
+        <div id="free-tab" class="tab-content">
+            <div class="admin-actions">
+                <h3>Free Learning Library</h3>
+                <div class="action-group">
+                    <button class="btn primary btn-sm add-res-btn" data-res-type="free"><i data-lucide="plus-circle"></i> Add Resource</button>
+                    <button class="btn secondary btn-sm refresh-content-btn"><i data-lucide="refresh-cw"></i> Refresh</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="free-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- EXCLUSIVE RESOURCES -->
+        <div id="exclusive-tab" class="tab-content">
+            <div class="admin-actions">
+                <h3>Exclusive Vault Assets</h3>
+                <div class="action-group">
+                    <button class="btn primary btn-sm add-res-btn" data-res-type="exclusive"><i data-lucide="plus-circle"></i> Add Exclusive</button>
+                    <button class="btn secondary btn-sm refresh-content-btn"><i data-lucide="refresh-cw"></i> Refresh</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="exclusive-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- YOUTUBE VIDEOS -->
+        <div id="youtube-tab" class="tab-content">
+            <div class="admin-actions">
+                <h3>YouTube Channel Feed</h3>
+                <div class="action-group">
+                    <button id="add-youtube-btn" class="btn primary btn-sm"><i data-lucide="video"></i> Add Video</button>
+                    <button class="btn secondary btn-sm refresh-content-btn"><i data-lucide="refresh-cw"></i> Refresh</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Views</th>
+                            <th>Duration</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="youtube-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Generic Resource Modal -->
+    <div id="resource-modal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <button class="modal-close"><i data-lucide="x"></i></button>
+            <h3>Manage <span class="highlight">Resource</span></h3>
+            <div class="modal-form">
+                <div class="input-group">
+                    <label>Resource ID (Number)</label>
+                    <input type="number" id="res-id">
+                </div>
+                <div class="input-group">
+                    <label>Title</label>
+                    <input type="text" id="res-title">
+                </div>
+                <div class="input-group">
+                    <label>Description</label>
+                    <textarea id="res-desc" rows="3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); padding: 1rem; border-radius: 12px; color: var(--text-color); width: 100%; font-family: inherit; resize: none;"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Link (URL)</label>
+                    <input type="text" id="res-link">
+                </div>
+                <button id="save-res-btn" class="modal-submit-btn">Save Resource <i data-lucide="save"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- YouTube Modal -->
+    <div id="youtube-modal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <button class="modal-close"><i data-lucide="x"></i></button>
+            <h3>Manage <span class="highlight">Video</span></h3>
+            <div class="modal-form">
+                <div class="input-group">
+                    <label>Video Title</label>
+                    <input type="text" id="yt-title">
+                </div>
+                <div class="input-group">
+                    <label>Video ID (e.g. dQw4w9WgXcQ)</label>
+                    <input type="text" id="yt-id">
+                </div>
+                <div class="input-group">
+                    <label>Views (Display String)</label>
+                    <input type="text" id="yt-views">
+                </div>
+                <div class="input-group">
+                    <label>Duration (MM:SS)</label>
+                    <input type="text" id="yt-duration">
+                </div>
+                <div class="input-group">
+                    <label>Thumbnail (URL)</label>
+                    <input type="text" id="yt-thumb">
+                </div>
+                <div class="input-group">
+                    <label>Main URL</label>
+                    <input type="text" id="yt-url">
+                </div>
+                <button id="save-yt-btn" class="modal-submit-btn">Save Video <i data-lucide="save"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Edit Modal -->
+    <div id="edit-user-modal" class="custom-modal-overlay">
+        <div class="custom-modal-content" style="max-width: 600px;">
+            <button class="modal-close"><i data-lucide="x"></i></button>
+            <h3>Edit <span id="modal-username-title" class="highlight">User</span></h3>
+            <div class="modal-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="edit-username">
+                    </div>
+                    <div class="input-group">
+                        <label>Role</label>
+                        <select id="edit-role">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Password (Literal)</label>
+                    <input type="text" id="edit-password">
+                </div>
+                <div class="input-group">
+                    <label>Recovery PIN</label>
+                    <input type="text" id="edit-recovery">
+                </div>
+                <div id="score-inputs" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"></div>
+                <button id="save-user-btn" class="modal-submit-btn">Save User <i data-lucide="save"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Admin Portal | Captain Automation Labs</p>
+        </div>
+    </footer>
+
+    <style>
+        body.admin-page { background: var(--bg-color); color: var(--text-color); }
+        
+        .page-header {
+            padding: 8rem 5% 2rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+
+        .header-inner {
+            overflow: hidden;
+            transition: all 0.4s ease;
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        .page-header.collapsed {
+            padding-top: 6rem;
+            padding-bottom: 1rem;
+        }
+
+        .page-header.collapsed .header-inner {
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+        }
+
+        .header-tools {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .page-header.collapsed .header-tools {
+            margin-top: 0;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0 1rem;
+        }
+
+        .collapse-trigger {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--primary-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: -16px;
+            z-index: 10;
+        }
+
+        .collapse-trigger:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .page-header.collapsed .collapse-trigger i {
+            transform: rotate(180deg);
+        }
+
+        .tab-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: 0.3s;
+            font-family: inherit;
+            font-weight: 600;
+        }
+        .tab-btn.active { background: var(--primary-color); color: white !important; border-color: var(--primary-color); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .admin-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap; }
+        .action-group { display: flex; gap: 1rem; }
+
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow-x: auto;
+            margin-top: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+        th, td { padding: 1.2rem; border-bottom: 1px solid var(--glass-border); }
+        th { background: rgba(99, 102, 241, 0.05); color: var(--primary-color); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; font-weight: 800; }
+        tr:hover { background: rgba(255, 255, 255, 0.02); }
+        .btn-sm { padding: 0.6rem 1rem !important; font-size: 0.8rem !important; }
+        
+        .score-pill { display: inline-block; padding: 0.2rem 0.6rem; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 4px; font-size: 0.75rem; margin: 0.1rem; color: var(--text-muted); }
+        
+        select { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); padding: 1rem; border-radius: 12px; color: var(--text-color); width: 100%; font-family: inherit; }
+
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 2.5rem; }
+            .admin-actions { flex-direction: column; align-items: stretch; margin-top: 1.5rem; }
+            .admin-actions h3 { text-align: center; margin-bottom: 0.5rem; }
+            .action-group { flex-direction: column; }
+            .action-group button { width: 100%; }
+        }
+    </style>
+
+    <script>
+        let fullConfig = null;
+        let fullContent = null;
+        let editingIndex = -1;
+        let editingType = '';
+
+        const adminUser = sessionStorage.getItem('vault_user');
+        const adminPass = sessionStorage.getItem('vault_pass');
+
+        if (sessionStorage.getItem('vault_role') !== 'admin') window.location.href = 'index.html';
+
+        // Toast
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            gsap.to(t, { opacity: 1, y: -20, duration: 0.4 });
+            setTimeout(() => gsap.to(t, { opacity: 0, y: 0, duration: 0.4 }), 3000);
+        }
+
+        // Tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(`${btn.getAttribute('data-tab')}-tab`).classList.add('active');
+                localStorage.setItem('admin_last_tab', btn.getAttribute('data-tab'));
+            }
+        });
+
+        // Theme
+        function initTheme() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+            document.getElementById('theme-toggle').onclick = () => {
+                const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                updateThemeIcon(next);
+            };
+            updateThemeIcon(saved);
+        }
+        function updateThemeIcon(t) {
+            document.querySelector('#theme-toggle i').setAttribute('data-lucide', t === 'dark' ? 'sun' : 'moon');
+            lucide.createIcons();
+        }
+
+        // Data
+        async function fetchAll() {
+            try {
+                const headers = { 'x-admin-user': adminUser, 'x-admin-pass': adminPass };
+                const [confRes, contRes] = await Promise.all([
+                    fetch('/api/admin/config', { headers }),
+                    fetch('/api/admin/content', { headers })
+                ]);
+                fullConfig = await confRes.json();
+                fullContent = await contRes.json();
+                renderAll();
+            } catch (e) { alert("Session expired or server error. Please login again."); }
+        }
+
+        function renderAll() {
+            renderUsers();
+            renderResources('free', fullContent.FREE_RESOURCES);
+            renderResources('exclusive', fullContent.EXCLUSIVE_RESOURCES);
+            renderYoutube();
+            lucide.createIcons();
+        }
+
+        function renderUsers() {
+            const body = document.getElementById('user-body'); body.innerHTML = '';
+            fullConfig.users.forEach((u, i) => {
+                const tr = document.createElement('tr');
+                const pills = Object.entries(u.scores).map(([k,v]) => `<span class="score-pill">${k}:${v}</span>`).join('');
+                tr.innerHTML = `<td><strong>${u.username}</strong></td><td><span class="badge" style="margin:0">${u.role}</span></td><td>${pills}</td>
+                    <td><button class="btn-small edit-user" data-idx="${i}"><i data-lucide="edit-3"></i></button>
+                    <button class="btn-small del-user" data-idx="${i}" style="background:var(--accent-red); color:white !important; margin-left:5px;"><i data-lucide="trash-2"></i></button></td>`;
+                body.appendChild(tr);
+            });
+            attachUserEvents();
+        }
+
+        function renderResources(type, list) {
+            const body = document.getElementById(`${type}-body`); body.innerHTML = '';
+            list.forEach((r, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${r.id}</td><td><strong>${r.title}</strong></td><td style="color:var(--text-muted); font-size:0.8rem;">${r.desc}</td>
+                    <td><button class="btn-small edit-res" data-type="${type}" data-idx="${i}"><i data-lucide="edit-3"></i></button>
+                    <button class="btn-small del-res" data-type="${type}" data-idx="${i}" style="background:var(--accent-red); color:white !important; margin-left:5px;"><i data-lucide="trash-2"></i></button></td>`;
+                body.appendChild(tr);
+            });
+            attachResourceEvents();
+        }
+
+        function renderYoutube() {
+            const body = document.getElementById('youtube-body'); body.innerHTML = '';
+            fullContent.youtubeVideos.forEach((v, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><strong>${v.title}</strong></td><td>${v.views}</td><td>${v.duration}</td>
+                    <td><button class="btn-small edit-yt" data-idx="${i}"><i data-lucide="edit-3"></i></button>
+                    <button class="btn-small del-yt" data-idx="${i}" style="background:var(--accent-red); color:white !important; margin-left:5px;"><i data-lucide="trash-2"></i></button></td>`;
+                body.appendChild(tr);
+            });
+            attachYoutubeEvents();
+        }
+
+        // Modals
+        function openM(id) {
+            const m = document.getElementById(id); m.style.opacity = '1'; m.style.pointerEvents = 'auto';
+            gsap.fromTo(m.querySelector('.custom-modal-content'), {scale:0.8, opacity:0}, {scale:1, opacity:1, duration:0.4, ease:"back.out(1.7)"});
+        }
+        function closeM(id) {
+            const m = typeof id === 'string' ? document.getElementById(id) : id.closest('.custom-modal-overlay');
+            m.style.opacity = '0'; m.style.pointerEvents = 'none';
+        }
+        document.querySelectorAll('.modal-close').forEach(b => b.onclick = () => closeM(b));
+
+        // Events
+        function attachUserEvents() {
+            document.querySelectorAll('.edit-user').forEach(b => b.onclick = () => {
+                editingIndex = b.dataset.idx;
+                const u = fullConfig.users[editingIndex];
+                document.getElementById('edit-username').value = u.username;
+                document.getElementById('edit-role').value = u.role;
+                document.getElementById('edit-password').value = atob(u.password);
+                document.getElementById('edit-recovery').value = u.recoveryCode;
+                const src = document.getElementById('score-inputs'); src.innerHTML = '';
+                const scores = u.scores || {basics:0,ai_agents:0,reframework:0};
+                Object.entries(scores).forEach(([k,v]) => {
+                    src.innerHTML += `<div class="input-group"><label>${k}</label><input type="number" class="user-score-val" data-key="${k}" value="${v}"></div>`;
+                });
+                openM('edit-user-modal');
+            });
+            document.querySelectorAll('.del-user').forEach(b => b.onclick = () => {
+                if(confirm(`Delete user "${fullConfig.users[b.dataset.idx].username}"?`)) { 
+                    fullConfig.users.splice(b.dataset.idx, 1); 
+                    saveConfig("User Deleted"); 
+                }
+            });
+        }
+
+        document.getElementById('save-user-btn').onclick = () => {
+            const u = editingIndex === -1 ? {} : fullConfig.users[editingIndex];
+            u.username = document.getElementById('edit-username').value;
+            u.role = document.getElementById('edit-role').value;
+            u.password = btoa(document.getElementById('edit-password').value);
+            u.recoveryCode = document.getElementById('edit-recovery').value;
+            u.scores = u.scores || {};
+            document.querySelectorAll('.user-score-val').forEach(inp => u.scores[inp.dataset.key] = parseInt(inp.value)||0);
+            
+            if(editingIndex === -1) fullConfig.users.push(u);
+            saveConfig(editingIndex === -1 ? "User Created" : "User Updated"); 
+            closeM('edit-user-modal');
+        };
+
+        function attachResourceEvents() {
+            document.querySelectorAll('.edit-res').forEach(b => b.onclick = () => {
+                editingType = b.dataset.type === 'free' ? 'FREE_RESOURCES' : 'EXCLUSIVE_RESOURCES';
+                editingIndex = b.dataset.idx;
+                const r = fullContent[editingType][editingIndex];
+                document.getElementById('res-id').value = r.id;
+                document.getElementById('res-title').value = r.title;
+                document.getElementById('res-desc').value = r.desc;
+                document.getElementById('res-link').value = r.link;
+                openM('resource-modal');
+            });
+            document.querySelectorAll('.del-res').forEach(b => b.onclick = () => {
+                const key = b.dataset.type==='free'?'FREE_RESOURCES':'EXCLUSIVE_RESOURCES';
+                if(confirm("Delete this resource permanentely?")) { 
+                    fullContent[key].splice(b.dataset.idx, 1); 
+                    saveContent("Resource Removed"); 
+                }
+            });
+        }
+
+        document.getElementById('save-res-btn').onclick = () => {
+            const list = fullContent[editingType];
+            const r = editingIndex === -1 ? {} : list[editingIndex];
+            r.id = parseInt(document.getElementById('res-id').value);
+            r.title = document.getElementById('res-title').value;
+            r.desc = document.getElementById('res-desc').value;
+            r.link = document.getElementById('res-link').value;
+            if(editingIndex === -1) list.push(r);
+            saveContent(editingIndex === -1 ? "Resource Added" : "Resource Updated"); 
+            closeM('resource-modal');
+        };
+
+        function attachYoutubeEvents() {
+            document.querySelectorAll('.edit-yt').forEach(b => b.onclick = () => {
+                editingIndex = b.dataset.idx;
+                const v = fullContent.youtubeVideos[editingIndex];
+                document.getElementById('yt-title').value = v.title;
+                document.getElementById('yt-id').value = v.id;
+                document.getElementById('yt-views').value = v.views;
+                document.getElementById('yt-duration').value = v.duration;
+                document.getElementById('yt-thumb').value = v.thumbnail;
+                document.getElementById('yt-url').value = v.url;
+                openM('youtube-modal');
+            });
+            document.querySelectorAll('.del-yt').forEach(b => b.onclick = () => {
+                if(confirm("Delete this video entry?")) { 
+                    fullContent.youtubeVideos.splice(b.dataset.idx, 1); 
+                    saveContent("Video Removed"); 
+                }
+            });
+        }
+
+        document.getElementById('save-yt-btn').onclick = () => {
+            const v = editingIndex === -1 ? {} : fullContent.youtubeVideos[editingIndex];
+            v.title = document.getElementById('yt-title').value;
+            v.id = document.getElementById('yt-id').value;
+            v.views = document.getElementById('yt-views').value;
+            v.duration = document.getElementById('yt-duration').value;
+            v.thumbnail = document.getElementById('yt-thumb').value;
+            v.url = document.getElementById('yt-url').value;
+            if(editingIndex === -1) fullContent.youtubeVideos.push(v);
+            saveContent(editingIndex === -1 ? "Video Added" : "Video Updated"); 
+            closeM('youtube-modal');
+        };
+
+        // Save
+        async function saveConfig(msg) {
+            try {
+                const res = await fetch('/api/admin/save-config', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-user': adminUser, 'x-admin-pass': adminPass }, body: JSON.stringify(fullConfig) });
+                if(res.ok) { showToast(msg || "Config Saved"); renderUsers(); }
+                else alert("Save failed. Session might be expired.");
+            } catch(e) { alert("Server error."); }
+        }
+        async function saveContent(msg) {
+            try {
+                const res = await fetch('/api/admin/save-content', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-user': adminUser, 'x-admin-pass': adminPass }, body: JSON.stringify(fullContent) });
+                if(res.ok) { showToast(msg || "Content Updated"); renderAll(); }
+                else alert("Save failed. Check server logs.");
+            } catch(e) { alert("Server error."); }
+        }
+
+        // Add New
+        document.getElementById('create-user-btn').onclick = () => {
+            editingIndex = -1;
+            document.getElementById('edit-username').value = '';
+            document.getElementById('edit-password').value = '';
+            document.getElementById('edit-recovery').value = '';
+            document.getElementById('score-inputs').innerHTML = '<div class="input-group"><label>basics</label><input type="number" class="user-score-val" data-key="basics" value="0"></div><div class="input-group"><label>ai_agents</label><input type="number" class="user-score-val" data-key="ai_agents" value="0"></div><div class="input-group"><label>reframework</label><input type="number" class="user-score-val" data-key="reframework" value="0"></div>';
+            openM('edit-user-modal');
+        };
+        document.querySelectorAll('.add-res-btn').forEach(b => b.onclick = () => {
+            editingType = b.dataset.resType === 'free' ? 'FREE_RESOURCES' : 'EXCLUSIVE_RESOURCES';
+            editingIndex = -1;
+            document.getElementById('res-id').value = Date.now().toString().slice(-6);
+            document.getElementById('res-title').value = '';
+            document.getElementById('res-desc').value = '';
+            document.getElementById('res-link').value = '';
+            openM('resource-modal');
+        });
+        document.getElementById('add-youtube-btn').onclick = () => {
+            editingIndex = -1;
+            document.getElementById('yt-title').value = '';
+            document.getElementById('yt-id').value = '';
+            document.getElementById('yt-views').value = '0';
+            document.getElementById('yt-duration').value = '0:00';
+            document.getElementById('yt-thumb').value = 'https://img.youtube.com/vi/ID/maxresdefault.jpg';
+            document.getElementById('yt-url').value = 'https://www.youtube.com/watch?v=';
+            openM('youtube-modal');
+        };
+
+        document.querySelectorAll('.refresh-config-btn').forEach(b => b.onclick = fetchAll);
+        document.querySelectorAll('.refresh-content-btn').forEach(b => b.onclick = fetchAll);
+        document.getElementById('logout-btn').onclick = () => { sessionStorage.clear(); window.location.href='index.html'; };
+
+        // Header Collapse
+        const header = document.getElementById('main-header');
+        const collapseBtn = document.getElementById('header-collapse-btn');
+        
+        function toggleHeader(collapsed) {
+            if (collapsed) {
+                header.classList.add('collapsed');
+            } else {
+                header.classList.remove('collapsed');
+            }
+            localStorage.setItem('admin_header_collapsed', collapsed);
+            lucide.createIcons();
+        }
+
+        collapseBtn.onclick = () => {
+            const isCollapsed = header.classList.contains('collapsed');
+            toggleHeader(!isCollapsed);
+        };
+
+        // Restore header state
+        if (localStorage.getItem('admin_header_collapsed') === 'true') {
+            toggleHeader(true);
+        }
+
+        // Init
+        initTheme(); fetchAll();
+        // Restore last tab
+        const lastTab = localStorage.getItem('admin_last_tab');
+        if(lastTab) {
+            const btn = document.querySelector(`.tab-btn[data-tab="${lastTab}"]`);
+            if(btn) btn.click();
+        }
+    </script>
+</body>
+</html>

@@ -1,13 +1,6 @@
-// Detect page refresh and logout
+// User Session Management
 (function() {
-    const navEntries = performance.getEntriesByType('navigation');
-    const isReload = (navEntries.length > 0 && navEntries[0].type === 'reload') || 
-                     (performance.navigation && performance.navigation.type === 1);
-    if (isReload) {
-        sessionStorage.removeItem('vault_user');
-        sessionStorage.removeItem('vault_pass');
-        sessionStorage.removeItem('vault_unlocked');
-    }
+    // Keep session alive across reloads/navs
 })();
 
 // Three.js Core Background
@@ -224,6 +217,53 @@ function animateEntrance() {
     }
 }
 
+// Global Header Toggle (Resources, YouTube, etc)
+window.toggleGlobalHeader = function() {
+    const header = document.getElementById('global-page-header');
+    if (!header) return;
+    const isCollapsed = header.classList.contains('collapsed');
+    const newState = !isCollapsed;
+    
+    if (newState) header.classList.add('collapsed');
+    else header.classList.remove('collapsed');
+    
+    localStorage.setItem('global_header_collapsed', newState);
+    lucide.createIcons();
+};
+
+function initHeroCollapse() {
+    const hero = document.getElementById('hero-section');
+    const trigger = document.getElementById('hero-collapse-btn');
+    if (!hero || !trigger) {
+        // Not index page, check if global header needs restoring
+        const globalHeader = document.getElementById('global-page-header');
+        if (globalHeader && localStorage.getItem('global_header_collapsed') === 'true') {
+            globalHeader.classList.add('collapsed');
+        }
+        return;
+    }
+
+    function toggleHero(collapsed) {
+        if (collapsed) {
+            hero.classList.add('collapsed');
+        } else {
+            hero.classList.remove('collapsed');
+        }
+        localStorage.setItem('home_hero_collapsed', collapsed);
+        lucide.createIcons();
+    }
+
+    trigger.onclick = () => {
+        const isCollapsed = hero.classList.contains('collapsed');
+        toggleHero(!isCollapsed);
+    };
+
+    // Restore state
+    if (localStorage.getItem('home_hero_collapsed') === 'true') {
+        toggleHero(true);
+    }
+}
+
 // Init
 window.addEventListener('DOMContentLoaded', async () => {
     initThree();
@@ -231,6 +271,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     animateEntrance();
     initTheme();
     initAuthUI();
+    initHeroCollapse();
     await initVault();
 });
 
@@ -283,12 +324,16 @@ function initAuthUI() {
                 <span>${savedUser}</span>
             </button>
             <div class="dropdown-menu" id="profile-dropdown">
+                ${sessionStorage.getItem('vault_role') === 'admin' ? '<button onclick="window.location.href=\'admin.html\'"><i data-lucide="settings" size="16"></i> Admin Control</button><div class="dropdown-divider"></div>' : ''}
+                <button id="change-pass-btn"><i data-lucide="key" size="16"></i> Change Password</button>
+                <div class="dropdown-divider"></div>
                 <button id="logout-btn"><i data-lucide="log-out" size="16"></i> Logout</button>
             </div>
         `;
         
         const btn = document.getElementById('profile-menu-btn');
         const dropdown = document.getElementById('profile-dropdown');
+        const changePassBtn = document.getElementById('change-pass-btn');
         const logoutBtn = document.getElementById('logout-btn');
 
         btn.addEventListener('click', (e) => {
@@ -302,9 +347,14 @@ function initAuthUI() {
             }
         });
 
+        changePassBtn.addEventListener('click', () => {
+            showChangePasswordModal();
+        });
+
         logoutBtn.addEventListener('click', () => {
             sessionStorage.removeItem('vault_user');
             sessionStorage.removeItem('vault_pass');
+            sessionStorage.removeItem('vault_role');
             sessionStorage.removeItem('vault_unlocked');
             window.location.reload();
         });
@@ -344,8 +394,9 @@ async function initVault() {
 
                 if (data.success) {
                     if (errorMsg) errorMsg.style.display = 'none';
-                    sessionStorage.setItem('vault_user', user);
+                    sessionStorage.setItem('vault_user', data.username);
                     sessionStorage.setItem('vault_pass', pass);
+                    sessionStorage.setItem('vault_role', data.role || 'user');
                     sessionStorage.setItem('vault_unlocked', 'true');
                     
                     // Redirect back to fam.html after successful login
@@ -362,7 +413,7 @@ async function initVault() {
                     gsap.to(loginForm, { x: 10, duration: 0.1, repeat: 5, yoyo: true });
                 }
             } catch (err) {
-                alert("Login Server unreachable! Ensure python server.py is running.");
+                                alert("Login Server unreachable! Ensure Node.js server.js is running.");
             }
         });
     }
@@ -381,6 +432,7 @@ async function initVault() {
             const data = await response.json();
             
             if (data.success) {
+                sessionStorage.setItem('vault_role', data.role || 'user');
                 if (document.getElementById('locked-overlay')) {
                     document.getElementById('locked-overlay').classList.add('unlocked');
                     document.getElementById('vault-card').classList.add('show-content');
@@ -403,19 +455,162 @@ async function initVault() {
     if (forgotBtn) {
         forgotBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const username = prompt("Enter your Vault Username to reset your password:");
-            if (!username) return;
-
-            // Check if username actually exists in config
-            const userExists = CONFIG.users.find(u => u.username.toLowerCase() === username.toLowerCase());
-            if (!userExists) {
-                alert("Username not found in system.");
-                return;
-            }
-
-            const subject = encodeURIComponent("Password Reset Request - CA Vault");
-            const body = encodeURIComponent(`Hi Darshan,\n\nI forgot my password for the Captain Automation Vault. Could you please reset it for me in the config?\n\nMy Username is: ${userExists.username}\n\nThank you!`);
-            window.location.href = `mailto:darshan29sable@gmail.com?subject=${subject}&body=${body}`;
+            showForgotPasswordModal();
         });
     }
+}
+
+// --- MODERN UI MODALS ---
+
+function createModal(id, title, fields, submitText, onSubmit) {
+    // Remove if exists
+    const existing = document.getElementById(id);
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = id;
+    modal.className = 'custom-modal-overlay';
+    modal.innerHTML = `
+        <div class="custom-modal-content">
+            <button class="modal-close"><i data-lucide="x"></i></button>
+            <h3>${title}</h3>
+            <div class="modal-form">
+                ${fields.map(f => `
+                    <div class="input-group">
+                        <label>${f.label}</label>
+                        <input type="${f.type}" id="${f.id}" placeholder="${f.placeholder}" required>
+                    </div>
+                `).join('')}
+                <div id="${id}-error" class="modal-error"></div>
+                <button class="modal-submit-btn">${submitText} <i data-lucide="arrow-right"></i></button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    lucide.createIcons();
+
+    const closeBtn = modal.querySelector('.modal-close');
+    const submitBtn = modal.querySelector('.modal-submit-btn');
+    const overlay = modal;
+
+    const hide = () => {
+        gsap.to(modal.querySelector('.custom-modal-content'), { scale: 0.9, opacity: 0, duration: 0.3, ease: "power2.in", onComplete: () => modal.remove() });
+        gsap.to(overlay, { opacity: 0, duration: 0.3 });
+    };
+
+    closeBtn.onclick = hide;
+    overlay.onclick = (e) => { if(e.target === overlay) hide(); };
+
+    submitBtn.onclick = async () => {
+        const data = {};
+        fields.forEach(f => {
+            data[f.id] = document.getElementById(f.id).value.trim();
+        });
+        
+        // Basic common validation
+        const errorDiv = document.getElementById(`${id}-error`);
+        errorDiv.style.display = 'none';
+
+        if (fields.some(f => !data[f.id])) {
+            errorDiv.textContent = "Please fill all fields.";
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        if (data.newPass && data.newPass.length < 4) {
+            errorDiv.textContent = "Password must be at least 4 characters.";
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        if (data.newPass && data.confirmPass && data.newPass !== data.confirmPass) {
+            errorDiv.textContent = "Passwords do not match.";
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Processing...';
+
+        await onSubmit(data, errorDiv, hide);
+        
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `${submitText} <i data-lucide="arrow-right"></i>`;
+        lucide.createIcons();
+    };
+
+    // Animation in
+    gsap.to(overlay, { opacity: 1, duration: 0.3 });
+    gsap.fromTo(modal.querySelector('.custom-modal-content'), 
+        { scale: 0.8, opacity: 0 }, 
+        { scale: 1, opacity: 1, duration: 0.5, ease: "elastic.out(1, 0.8)" }
+    );
+}
+
+function showChangePasswordModal() {
+    createModal('change-pass-modal', 'Update Password', [
+        { id: 'newPass', label: 'New Password', type: 'password', placeholder: 'Enter new password' },
+        { id: 'confirmPass', label: 'Confirm Password', type: 'password', placeholder: 'Confirm new password' }
+    ], 'Update Password', async (data, errorDiv, hide) => {
+        try {
+            const savedUser = sessionStorage.getItem('vault_user');
+            const response = await fetch('/api/update-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: savedUser,
+                    newPasswordBase64: btoa(data.newPass)
+                })
+            });
+            const resData = await response.json();
+            if (resData.success) {
+                alert("Password updated! Please login again.");
+                sessionStorage.clear();
+                window.location.reload();
+            } else {
+                errorDiv.textContent = resData.message;
+                errorDiv.style.display = 'block';
+            }
+        } catch (e) {
+            errorDiv.textContent = "Server unreachable.";
+            errorDiv.style.display = 'block';
+        }
+    });
+}
+
+function showForgotPasswordModal() {
+    createModal('forgot-pass-modal', 'Reset Password', [
+        { id: 'user', label: 'Username', type: 'text', placeholder: 'Enter your username' },
+        { id: 'recovery', label: 'Recovery Code', type: 'password', placeholder: 'Enter 4-digit PIN' },
+        { id: 'newPass', label: 'New Password', type: 'password', placeholder: 'Enter new password' },
+        { id: 'confirmPass', label: 'Confirm Password', type: 'password', placeholder: 'Confirm new password' }
+    ], 'Reset Account', async (data, errorDiv, hide) => {
+        try {
+            const response = await fetch('/api/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: data.user,
+                    recoveryCode: data.recovery,
+                    newPasswordBase64: btoa(data.newPass)
+                })
+            });
+            const resData = await response.json();
+            if (resData.success) {
+                alert("Password reset successful!");
+                hide();
+            } else {
+                if (resData.message === "Not a member, join community") {
+                    alert(resData.message);
+                    window.location.href = 'fam.html';
+                } else {
+                    errorDiv.textContent = resData.message;
+                    errorDiv.style.display = 'block';
+                }
+            }
+        } catch (e) {
+            errorDiv.textContent = "Server unreachable.";
+            errorDiv.style.display = 'block';
+        }
+    });
 }
