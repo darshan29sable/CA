@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captain Automation - Darshan Sable</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="home-page">
+    <div id="canvas-container"></div>
+    
+    <header>
+        <nav>
+            <div class="logo"><a href="index.html">CAPTAIN<span>AUTOMATION</span></a></div>
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="about.html">About Me</a>
+                <a href="resources.html">Resources</a>
+                <a href="youtube.html">YouTube</a>
+                <a href="mock-test.html">Mock Test</a>
+                <a href="fam.html" class="btn-small">CA Community</a>
+                <button id="theme-toggle" class="theme-btn" title="Toggle Theme">
+                    <i data-lucide="moon"></i>
+                </button>
+                <div class="auth-container" id="auth-container"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-split">
+            <div class="hero-text">
+                <h2 class="badge">Professional RPA Hub</h2>
+                <h1>Mastering <br><span class="highlight">Intelligent</span><br>Automation</h1>
+                <p>Welcome to the official portal of Captain Automation. Discover world-class resources for UiPath, Orchestrator, and Beyond.</p>
+                <div class="hero-btns">
+                    <a href="resources.html" class="btn primary">View Library</a>
+                    <a href="youtube.html" class="btn secondary">Latest Videos</a>
+                </div>
+            </div>
+            <div class="hero-3d-scene">
+                <!-- 3D geometric nodes will be prioritized here in main.js -->
+                <div class="geometric-shape" id="main-3d-node"></div>
+            </div>
+        </section>
+
+        <section class="stat-grid">
+            <div class="stat-card">
+                <h3>24+</h3>
+                <p>Learning Modules</p>
+            </div>
+            <div class="stat-card">
+                <h3>10K+</h3>
+                <p>Community Members</p>
+            </div>
+            <div class="stat-card">
+                <h3>50+</h3>
+                <p>Tutorial Videos</p>
+            </div>
+        </section>
+
+        <section class="perks-overview">
+            <div class="section-header">
+                <h2>Why Join the <span class="highlight">Community?</span></h2>
+                <p>Unlock premium benefits and accelerate your career in automation.</p>
+            </div>
+            <div class="perks-grid">
+                <div class="perk-item">
+                    <i data-lucide="zap"></i>
+                    <h4>Early Access</h4>
+                    <p>Get exclusive early access to all new tutorials and PDF guides.</p>
+                </div>
+                <div class="perk-item">
+                    <i data-lucide="users"></i>
+                    <h4>Mentorship</h4>
+                    <p>Direct Q&A sessions and career guidance from the Captain.</p>
+                </div>
+                <div class="perk-item">
+                    <i data-lucide="code"></i>
+                    <h4>Custom Workflows</h4>
+                    <p>Download production-ready templates and custom activities.</p>
+                </div>
+            </div>
+            <div class="center-btn">
+                <a href="fam.html" class="btn primary">Join the Community Now</a>
+            </div>
+        <section class="testimonials">
+            <div class="section-header">
+                <h2 class="badge">Wall of Love</h2>
+                <h2>The <span class="highlight">Genuinenity</span> Behind the Brand</h2>
+                <p>Real feedback from learners who transformed their careers with the Captain.</p>
+            </div>
+            <div class="testimonial-slider">
+                <div class="chat-screenshot">
+                    <img src="chat_1.png" alt="Learner Feedback 1">
+                </div>
+                <div class="chat-screenshot">
+                    <!-- Placeholder for next screenshot -->
+                    <div class="placeholder-chat">
+                        <i data-lucide="message-square" size="48"></i>
+                        <p>"Darshan, I just got hired as a Senior RPA Dev thanks to your Studio module! You are a legend."</p>
+                        <span>- Verified Learner</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Captain Automation. Built for the community.</p>
+            <div class="socials">
+                <a href="https://www.linkedin.com/in/darshansable/" target="_blank"><i data-lucide="linkedin"></i></a>
+                <a href="#"><i data-lucide="youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script src="config.js"></script>
+    <script src="content.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

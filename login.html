@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Captain Automation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .login-wrapper {
+            padding: 8rem 5% 4rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            width: 100%;
+        }
+
+        .login-form-area {
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-graphic {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-graphic::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.2) 100%);
+        }
+
+        .login-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .login-form input {
+            padding: 1.2rem 1.5rem;
+            border-radius: 12px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            transition: 0.3s;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .login-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .login-form button {
+            padding: 1.2rem;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            color: #ffffff;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .login-form button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+            background: var(--accent-color);
+        }
+
+        .error-msg {
+            color: var(--accent-red);
+            margin-top: 1rem;
+            display: none;
+            background: rgba(244, 63, 94, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(244, 63, 94, 0.2);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                grid-template-columns: 1fr;
+            }
+            .login-graphic {
+                display: none;
+            }
+            .login-form-area {
+                padding: 3rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body class="login-page">
+    <div id="canvas-container"></div>
+    <header>
+        <nav>
+            <div class="logo"><a href="index.html">CAPTAIN<span>AUTOMATION</span></a></div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About Me</a>
+                <a href="resources.html">Resources</a>
+                <a href="youtube.html">YouTube</a>
+                <a href="mock-test.html">Mock Test</a>
+                <a href="fam.html" class="btn-small">CA Community</a>
+                <button id="theme-toggle" class="theme-btn" title="Toggle Theme">
+                    <i data-lucide="moon"></i>
+                </button>
+                <div class="auth-container" id="auth-container"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="login-wrapper">
+            <div class="login-card" id="vault-card">
+                <div class="login-form-area">
+                    <h2 style="font-size: 2.2rem; font-weight: 800; color: var(--text-color);">Welcome Back.</h2>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 1.1rem;">Login to unlock the exclusive Captain Vault.</p>
+                    <form class="login-form" id="vault-login">
+                        <input type="text" id="vault-user" placeholder="Username" required>
+                        <input type="password" id="vault-pass" placeholder="Password" required>
+                        <a href="#" id="forgot-password" style="font-size: 0.9rem; color: var(--primary-color); text-align: right; margin-top: -0.2rem; text-decoration: none; font-weight: 500;">Forgot Password?</a>
+                        <button type="submit">Unlock Vault <i data-lucide="arrow-right"></i></button>
+                        <div id="login-error" class="error-msg"><i data-lucide="alert-circle" size="18" style="vertical-align: middle; margin-right: 5px;"></i> Invalid credentials.</div>
+                    </form>
+                    <p style="margin-top: 2rem; font-size: 0.95rem; color: var(--text-muted); text-align: center;">
+                        Not a member yet? <a href="fam.html#fam-join-form" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Join the Community</a>
+                    </p>
+                </div>
+                <div class="login-graphic">
+                    <i data-lucide="shield-check" size="80" style="margin-bottom: 2rem; opacity: 0.9; position: relative; z-index: 2;"></i>
+                    <h3 style="font-size: 1.8rem; margin-bottom: 1rem; position: relative; z-index: 2;">Enterprise Resources</h3>
+                    <p style="font-size: 1.1rem; opacity: 0.8; line-height: 1.6; position: relative; z-index: 2;">Gain access to production-grade automation frameworks, exclusive templates, and private mentorship sessions.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="config.js"></script>
+    <script src="content.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Library | Captain Automation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="resources-page">
+    <div id="canvas-container"></div>
+    <header>
+        <nav>
+            <div class="logo"><a href="index.html">CAPTAIN<span>AUTOMATION</span></a></div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About Me</a>
+                <a href="resources.html" class="active">Resources</a>
+                <a href="youtube.html">YouTube</a>
+                <a href="mock-test.html">Mock Test</a>
+                <a href="fam.html" class="btn-small">CA Community</a>
+                <button id="theme-toggle" class="theme-btn" title="Toggle Theme">
+                    <i data-lucide="moon"></i>
+                </button>
+                <div class="auth-container" id="auth-container"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1>Automation <span class="highlight">Library</span></h1>
+            <p>Select a module to dive into the technical documentation and PDF guides.</p>
+        </section>
+        
+        <div class="resource-grid" id="main-resource-grid">
+            <!-- Injected by main.js -->
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="config.js"></script>
+    <script src="content.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

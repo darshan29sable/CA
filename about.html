@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Darshan Sable | Captain Automation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="about-page">
+    <div id="canvas-container"></div>
+    <header>
+        <nav>
+            <div class="logo"><a href="index.html">CAPTAIN<span>AUTOMATION</span></a></div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html" class="active">About Me</a>
+                <a href="resources.html">Resources</a>
+                <a href="youtube.html">YouTube</a>
+                <a href="mock-test.html">Mock Test</a>
+                <a href="fam.html" class="btn-small">CA Community</a>
+                <button id="theme-toggle" class="theme-btn" title="Toggle Theme">
+                    <i data-lucide="moon"></i>
+                </button>
+                <div class="auth-container" id="auth-container"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="about-hero">
+            <div class="about-visual">
+                <div class="profile-frame">
+                    <img src="captain_automation_avatar.png" alt="Darshan Sable">
+                    <div class="frame-glow"></div>
+                </div>
+            </div>
+            <div class="about-content">
+                <h2 class="badge">The Captain</h2>
+                <h1>Darshan <span class="highlight">Sable</span></h1>
+                <p class="lead">Technologist, Automation Architect, and Community Mentor.</p>
+                <div class="bio-text">
+                    <p>I am Darshan Sable, widely known as **Captain Automation**. My mission is to simplify the complex world of RPA and AI for developers across the globe.</p>
+                    <p>With years of experience in the UiPath ecosystem, I have built enterprise-level solutions and mentored thousands of students to master the art of intelligent automation. This platform is my contribution to the community—a centralized hub for excellence.</p>
+                </div>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/darshansable/" class="social-btn"><i data-lucide="linkedin"></i> LinkedIn</a>
+                    <a href="#" class="social-btn"><i data-lucide="youtube"></i> YouTube</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="config.js"></script>
+    <script src="content.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
